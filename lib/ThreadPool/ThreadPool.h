@@ -7,7 +7,7 @@ class ThreadPool
 {
     private:
         typedef struct tpool_work {
-            void (*routine)();
+            void (*routine)(void*);
             void *arg;
             struct tpool_work *next;
         } tpool_work_t;

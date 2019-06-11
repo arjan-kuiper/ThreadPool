@@ -35,7 +35,32 @@ void* ThreadPool::execute()
     while(true)
     {
         pthread_mutex_lock(&m_queue_lock);
+        while(m_cur_queue_size == 0 && !m_shutdown)
+        {
+            pthread_cond_wait(&m_queue_not_empty, &m_queue_lock);
+        }
+        if(m_shutdown)
+        {
+            pthread_mutex_unlock(&m_queue_lock);
+            pthread_exit(nullptr);
+        }
+        work = m_queue_head;
+        m_cur_queue_size--;
+        if(m_cur_queue_size == 0)
+            m_queue_head = m_queue_tail = nullptr;
+        else
+            m_queue_head = (ThreadPool::tpool_work_t*)work->next;
+        if(m_cur_queue_size == m_max_queue_size - 1)
+        {
+            pthread_cond_broadcast(&m_queue_not_full);
+        }
+        if(m_cur_queue_size == 0)
+        {
+            pthread_cond_signal(&m_queue_empty);
+        }
 
-        
+        pthread_mutex_unlock(&m_queue_lock);
+        (*(work->routine))(work->arg);
+        free(work);
     }
 }
