@@ -12,24 +12,20 @@ class ThreadPool
             struct tpool_work *next;
         } tpool_work_t;
 
-        typedef struct tpool {
-            __uint16_t num_threads;
-            __uint16_t max_queue_size;
-            __uint16_t cur_queue_size;
-            __uint16_t queue_closed;
-            __uint16_t shutdown;
-            pthread_t *threads;
-            tpool_work_t *queue_head;
-            tpool_work_t *queue_tail;
-            pthread_mutex_t queue_lock;
-            pthread_cond_t queue_not_empty;	
-            pthread_cond_t queue_not_full;	
-            pthread_cond_t queue_empty;     
-        } *tpool_t;
+        __uint16_t m_num_threads;
+        __uint16_t m_max_queue_size;
+        __uint16_t m_cur_queue_size;
+        __uint16_t m_queue_closed;
+        __uint16_t m_shutdown;
+        pthread_t *m_threads;
+        tpool_work_t *m_queue_head;
+        tpool_work_t *m_queue_tail;
+        pthread_mutex_t m_queue_lock;
+        pthread_cond_t m_queue_not_empty;	
+        pthread_cond_t m_queue_not_full;	
+        pthread_cond_t m_queue_empty;
 
-        tpool_t currentThreadPool;
-
-        void* execute(tpool_t tpool);
+        void* execute();
     
     public:
     ThreadPool(__uint16_t threads, __uint16_t maxQueueSize);
