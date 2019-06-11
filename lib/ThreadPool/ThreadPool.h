@@ -6,6 +6,8 @@
 class ThreadPool
 {
     private:
+        typedef void * (*THREADFUNCPTR)(void *);
+
         typedef struct tpool_work {
             void (*routine)(void*);
             void *arg;
@@ -26,8 +28,10 @@ class ThreadPool
         pthread_cond_t m_queue_empty;
 
         void* execute();
+        int deallocate(bool awaitWorkers = true);
     
     public:
     ThreadPool(__uint16_t threads, __uint16_t maxQueueSize);
     ~ThreadPool();
+    int addWork(void* routine, void* args);
 };
