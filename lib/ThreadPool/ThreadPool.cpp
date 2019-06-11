@@ -29,6 +29,11 @@ ThreadPool::ThreadPool(__uint16_t threads, __uint16_t maxQueueSize) : m_threads(
     }
 }
 
+ThreadPool::~ThreadPool()
+{
+    delete [] m_threads;
+}
+
 void* ThreadPool::execute()
 {
     tpool_work_t* work;
@@ -61,6 +66,6 @@ void* ThreadPool::execute()
 
         pthread_mutex_unlock(&m_queue_lock);
         (*(work->routine))(work->arg);
-        free(work);
+        delete work;
     }
 }

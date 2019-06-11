@@ -29,4 +29,5 @@ class ThreadPool
     
     public:
     ThreadPool(__uint16_t threads, __uint16_t maxQueueSize);
+    ~ThreadPool();
 };
